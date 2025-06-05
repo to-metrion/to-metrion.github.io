@@ -151,6 +151,7 @@ var savecustom = function () {
 			firstParenth = lines[0].lastIndexOf("(");
 			lastParenth = lines[0].lastIndexOf(")");
 			species = lines[0].substring(firstParenth + 1, lastParenth).trim();
+			spreadName = lines[0].substring(0, firstParenth-1).trim();
 		} else {
 			species = lines[0].split("@")[0].trim(); //species is always first
 		}
