@@ -116,10 +116,7 @@
     }
 
     window.addEventListener("message", function (e) {
-        if (e.data && e.data.source === "eisenlookup") {
-            console.log("[eisenlookup] message from", e.origin, "originOk:", originOk(e.origin));
-            if (originOk(e.origin)) handle(e.data);
-        }
+        if (originOk(e.origin) && e.data && e.data.source === "eisenlookup") handle(e.data);
     });
 
     function readHash() {
