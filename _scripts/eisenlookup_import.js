@@ -107,10 +107,19 @@
         if (node && node.scrollIntoView) node.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
 
-    function originOk(o) { try { return /(^|\.)eisencalc\.com$/.test(new URL(o).hostname); } catch (e) { return false; } }
+    function originOk(o) {
+        try {
+            var h = new URL(o).hostname;
+            // *.eisencalc.com (prod) + localhost/127.0.0.1 (local lookup dev).
+            return /(^|\.)eisencalc\.com$/.test(h) || h === "localhost" || h === "127.0.0.1";
+        } catch (e) { return false; }
+    }
 
     window.addEventListener("message", function (e) {
-        if (originOk(e.origin) && e.data && e.data.source === "eisenlookup") handle(e.data);
+        if (e.data && e.data.source === "eisenlookup") {
+            console.log("[eisenlookup] message from", e.origin, "originOk:", originOk(e.origin));
+            if (originOk(e.origin)) handle(e.data);
+        }
     });
 
     function readHash() {
