@@ -92,12 +92,14 @@
         }
         var id = sp + " (" + setName + ")";
         var $sel = $("#p2 input.set-selector");
-        // Set select2's OWN value (keeps its internal state in sync, so the panel populates
-        // and repeat exports work), then fire change to fill the panel. The collapsed label
-        // is set directly: this select2 has a fixed `initSelection` (always the first set),
-        // so it can't render an arbitrary selection the normal way.
-        try { $sel.select2("val", id); } catch (e) { $sel.val(id); }
-        $sel.trigger("change");
+        // select2("data", obj) sets both the value AND select2's internal state to `id`
+        // directly (bypassing its fixed initSelection), so the change handler reads the right
+        // set and repeat exports stay in sync. .val() is a fallback if the API differs.
+        try { $sel.select2("data", { pokemon: sp, set: setName, text: id, id: id }); }
+        catch (e) { $sel.val(id); }
+        $sel.trigger("change");   // populate the panel from setdexAll
+        // change re-runs select2's fixed initSelection (first set), so refresh the collapsed
+        // label last, targeting field 2's set-selector specifically.
         setTimeout(function () {
             try { $sel.select2("container").find(".select2-chosen").text(id); } catch (e) {}
         }, 0);
