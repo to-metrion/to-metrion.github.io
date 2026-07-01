@@ -91,9 +91,16 @@
             injected = { dex: setdex, sp: sp };
         }
         var id = sp + " (" + setName + ")";
-        var p2 = $("#p2 input.set-selector");
-        p2.select2("data", { pokemon: sp, set: setName, text: id, id: id });
-        p2.trigger("change");
+        var $sel = $("#p2 input.set-selector");
+        // Set select2's OWN value (keeps its internal state in sync, so the panel populates
+        // and repeat exports work), then fire change to fill the panel. The collapsed label
+        // is set directly: this select2 has a fixed `initSelection` (always the first set),
+        // so it can't render an arbitrary selection the normal way.
+        try { $sel.select2("val", id); } catch (e) { $sel.val(id); }
+        $sel.trigger("change");
+        setTimeout(function () {
+            try { $sel.select2("container").find(".select2-chosen").text(id); } catch (e) {}
+        }, 0);
         var node = document.getElementById("p2");
         if (node && node.scrollIntoView) node.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
