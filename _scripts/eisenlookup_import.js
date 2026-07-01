@@ -82,17 +82,18 @@
         var chosen = null, pool = setdex[sp];
         if (pool) for (var name in pool) { if (sameSet(set, pool[name])) { chosen = name; break; } }
 
-        var p2 = $("#p2 input.set-selector");
-        if (chosen) {
-            p2.val(sp + " (" + chosen + ")").change();
-        } else {
+        var setName = chosen || "Imported";
+        if (!chosen) {
             setdex[sp] = setdex[sp] || {};
             setdex[sp].Imported = set;
             setdexAll[sp] = setdexAll[sp] || {};
             setdexAll[sp].Imported = set;
             injected = { dex: setdex, sp: sp };
-            p2.val(sp + " (Imported)").change();
         }
+        var id = sp + " (" + setName + ")";
+        var p2 = $("#p2 input.set-selector");
+        p2.select2("data", { pokemon: sp, set: setName, text: id, id: id });
+        p2.trigger("change");
         var node = document.getElementById("p2");
         if (node && node.scrollIntoView) node.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
