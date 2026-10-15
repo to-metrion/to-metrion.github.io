@@ -271,7 +271,7 @@ function setUpRecoilRecoveryText(result, attacker, defender, move, minDamage, ma
 	let roundFunction = gen <= 4 ? x => Math.floor(x) : x => Math.round(x);
 	if (attacker.ability === "Magic Guard" && !isNeutralizingGas) {
 		// no recoil
-	} else if (typeof move.hasRecoil === "number" && minDamage > 0 && (attacker.ability !== "Rock Head" || isNeutralizingGas)) {
+	} else if (typeof move.hasRecoil === "number" && minDamage > 0 && ((attacker.ability !== "Rock Head" || isNeutralizingGas) || move.name === "Struggle")) {
 		result.recoilType = "recoil";
 		// Parental Bond adds the damage values into a total and then applies the recoil value, so this is fine
 		minRecoilDamage = Math.max(roundFunction(Math.min(minDamage, defCurHP) * move.hasRecoil), 1);
@@ -284,26 +284,26 @@ function setUpRecoilRecoveryText(result, attacker, defender, move, minDamage, ma
 		}
 	} else if (move.hasRecoil === "crash") {
 		result.recoilType = "potential crash";
-		if (gen == 3) {
-			minRecoilDamage = Math.max(Math.floor(Math.min(minDamage, defCurHP) / 2), 1);
-			maxRecoilDamage = Math.max(Math.floor(Math.min(maxDamage, defCurHP) / 2), 1);
+		if (gen > 3) {
+			minRecoilDamage = Math.max(Math.floor((gen == 4 ? defMaxHP : atkMaxHP) / 2), 1); // this should always floor
+			result.recoilRange = minRecoilDamage;
+			result.recoilPercent = Math.round(minRecoilDamage * 1000 / atkMaxHP) / 10;
+		} else if (gen == 3 && !(result.damage.length == 1 && result.damage[0] == 0)) { // no recoil damage from an immunity
+			minRecoilDamage = Math.min(Math.max(Math.floor(minDamage / 2), 1), Math.floor(defMaxHP / 2));
+			maxRecoilDamage = Math.min(Math.max(Math.floor(maxDamage / 2), 1), Math.floor(defMaxHP / 2));
 			result.recoilRange = minRecoilDamage;
 			result.recoilPercent = Math.round(minRecoilDamage * 1000 / atkMaxHP) / 10;
 			if (minRecoilDamage != maxRecoilDamage) {
 				result.recoilRange += "-" + maxRecoilDamage;
 				result.recoilPercent += " - " + (Math.round(maxRecoilDamage * 1000 / atkMaxHP) / 10);
 			}
-		} else {
-			minRecoilDamage = Math.max(Math.floor((gen == 4 ? defMaxHP : atkMaxHP) / 2), 1); // this should always floor
-			result.recoilRange = minRecoilDamage;
-			result.recoilPercent = Math.round(minRecoilDamage * 1000 / atkMaxHP) / 10;
 		}
-	} else if (move.hasRecoil === "Struggle" && minDamage > 0) { // in gen 3 Struggle's recoil is percentage-based
+	} else if (move.hasRecoil === "Struggle" && minDamage > 0) { // in gen 3 Struggle's recoil is percentage-based so its hasRecoil property is a number
 		result.recoilType = move.hasRecoil;
 		result.recoilRange = Math.max(roundFunction(atkMaxHP / 4), 1);
 		result.recoilPercent = Math.round(result.recoilRange * 1000 / atkMaxHP) / 10;
-	} else if (move.hasRecoil === true) { // checking for strict equality to true is necessary here
-		// currently if a move has its hasRecoil property simply set to true instead of a string or a number, it means it damages the user for 50% max HP
+	} else if (move.hasRecoil === true) {
+		// currently if a move has its hasRecoil property simply set to true instead of a string or a number, it means recoil of 50% attacker's max HP
 		result.recoilType = "recoil";
 		result.recoilRange = Math.ceil(atkMaxHP / 2);
 		result.recoilPercent = Math.round(result.recoilRange * 1000 / atkMaxHP) / 10;

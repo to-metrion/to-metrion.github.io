@@ -745,7 +745,6 @@ function getDefaultMultiHits(moveName, ability, item) {
 		return 1;
 	}
 	if (moveName === "Dragon Darts") {
-		console.log("Dragon Darts getDefaultMultiHits()");
 		return $("input:radio[name='format']:checked").val().toLowerCase() === "doubles" ? 1 : move.maxMultiHits;
 	}
 	if (ability === "Skill Link" || ["Triple Kick", "Triple Axel", "Population Bomb"].includes(moveName)) {
