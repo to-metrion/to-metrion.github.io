@@ -178,6 +178,12 @@ $("#autoivsL").change(function () {
 	setIVSelectors($("#p1"), "L");
 });
 
+function getIVs(poke) {
+	let ivs = {"hp": ~~poke.find(".hp .ivs").val()};
+	STATS.forEach(stat => { ivs[stat] = ~~poke.find("." + stat + " .ivs").val(); });
+	return ivs;
+}
+
 function setIVSelectors(poke, side) {
 	if (!poke) {
 		return;
@@ -893,8 +899,12 @@ $(".set-selector").bind("change", function () {
 		setSelectValueIfValid(itemObj, set.item && oldItemNames[set.item] ? oldItemNames[set.item] : set.item, "");
 		for (i = 0; i < 4; i++) {
 			moveObj = pokeObj.find(".move" + (i + 1) + " select.move-selector");
-			setSelectValueIfValid(moveObj, set.moves[i], "(No Move)");
+			let hiddenPower = set.moves[i] === "Hidden Power" ? getHiddenPower(getIVs(pokeObj)) : null;
+			setSelectValueIfValid(moveObj, hiddenPower ? hiddenPower.name : set.moves[i], "(No Move)");
 			moveObj.change();
+			if (hiddenPower) {
+				moveObj.parent().children(".move-bp").val(hiddenPower.bp);
+			}
 		}
 		if (gameId == 8 && pokemonName in setdex && setName in setdex[pokemonName]) {
 			// all AI mons have a dynamax level of 0
@@ -1218,12 +1228,18 @@ function Pokemon(pokeInfo) {
 		setdexPoke ? setdexPoke.moves[3] : move4.find("select.move-selector").val()
 	];
 	// if the set is a facility set and the move does not exist in moves, pass on the move's name so it appears in resultMove
-	poke.moves = [
-		setdexPoke && !(setdexPoke.moves[0] in moves) ? {"name": setdexPoke.moves[0], "bp": 0} : getMoveDetails(move1, poke),
-		setdexPoke && !(setdexPoke.moves[1] in moves) ? {"name": setdexPoke.moves[1], "bp": 0} : getMoveDetails(move2, poke),
-		setdexPoke && !(setdexPoke.moves[2] in moves) ? {"name": setdexPoke.moves[2], "bp": 0} : getMoveDetails(move3, poke),
-		setdexPoke && !(setdexPoke.moves[3] in moves) ? {"name": setdexPoke.moves[3], "bp": 0} : getMoveDetails(move4, poke)
-	];
+	poke.moves = [move1, move2, move3, move4].map((moveInfo, i) => {
+		let setMove = setdexPoke && setdexPoke.moves[i];
+		if (setMove === "Hidden Power") {
+			let details = getMoveDetails(moveInfo, poke);
+			if (details.isZ || details.isMax) {
+				return details;
+			}
+			let hp = getHiddenPower($.extend({"hp": poke.HPIVs}, poke.ivs));
+			return $.extend(details, moves[hp.name], {"name": hp.name, "bp": hp.bp, "hits": 1, "usedTimes": 1});
+		}
+		return setMove && !(setMove in moves) ? {"name": setMove, "bp": 0} : getMoveDetails(moveInfo, poke);
+	});
 	// if this mon holds a weakness policy and the weakness policy button is pressed, treat it as having no held item
 	if (poke.item === "Weakness Policy" && $("#wp" + (pokeInfo.prop("id") == "p1" ? "L" : "R")).prop("checked")) {
 		poke.item = "";
