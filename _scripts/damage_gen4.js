@@ -99,7 +99,7 @@ function getDamageResultPtHGSS(attacker, defender, move, field) {
 	var typeEffect1 = getMoveEffectiveness(move, moveType, defender.type1, attacker.ability === "Scrappy", field);
 	var typeEffect2 = defender.type2 ? getMoveEffectiveness(move, moveType, defender.type2, attacker.ability === "Scrappy", field) : 1;
 	var typeEffectiveness = typeEffect1 * typeEffect2;
-	if (reorderTypeEffectiveness(defender)) {
+	if (reorderTypeEffectiveness(defender, moveType)) {
 		let temp = typeEffect1;
 		typeEffect1 = typeEffect2;
 		typeEffect2 = temp;
@@ -542,27 +542,28 @@ function getTripleKickDamage(getDamageResultFunction, attacker, defender, move, 
 	return damageArrays;
 }
 
-// in gens 3 and 4, type effectiveness is applied in this list's order.
-const TYPE_EFFECTIVENESS_PRECEDENCE = [
-	"Normal",
-	"Fire",
-	"Water",
-	"Electric",
-	"Grass",
-	"Ice",
-	"Fighting",
-	"Poison",
-	"Ground",
-	"Flying",
-	"Psychic",
-	"Bug",
-	"Rock",
-	"Ghost",
-	"Dragon",
-	"Dark",
-	"Steel"
-];
+// in gens 3 and 4, type effectiveness is applied in the order of the type chart's rows for the move's type
+const TYPE_CHART_ROW_ORDER = {
+	"Normal": ["Rock", "Steel"],
+	"Fire": ["Fire", "Water", "Grass", "Ice", "Bug", "Rock", "Dragon", "Steel"],
+	"Water": ["Fire", "Water", "Grass", "Ground", "Rock", "Dragon"],
+	"Electric": ["Water", "Electric", "Grass", "Flying", "Dragon"],
+	"Grass": ["Fire", "Water", "Grass", "Poison", "Ground", "Flying", "Bug", "Rock", "Dragon", "Steel"],
+	"Ice": ["Water", "Grass", "Ice", "Ground", "Flying", "Dragon", "Steel", "Fire"],
+	"Fighting": ["Normal", "Ice", "Poison", "Flying", "Psychic", "Bug", "Rock", "Dark", "Steel"],
+	"Poison": ["Grass", "Poison", "Ground", "Rock", "Ghost"],
+	"Ground": ["Fire", "Electric", "Grass", "Poison", "Bug", "Rock", "Steel"],
+	"Flying": ["Electric", "Grass", "Fighting", "Bug", "Rock", "Steel"],
+	"Psychic": ["Fighting", "Poison", "Psychic", "Steel"],
+	"Bug": ["Fire", "Grass", "Fighting", "Poison", "Flying", "Psychic", "Ghost", "Dark", "Steel"],
+	"Rock": ["Fire", "Ice", "Fighting", "Ground", "Flying", "Bug", "Steel"],
+	"Ghost": ["Psychic", "Dark", "Steel", "Ghost"],
+	"Dragon": ["Dragon", "Steel"],
+	"Dark": ["Fighting", "Psychic", "Ghost", "Dark", "Steel"],
+	"Steel": ["Fire", "Water", "Electric", "Ice", "Rock", "Steel"]
+};
 
-function reorderTypeEffectiveness(defender) {
-	return defender.type2 && TYPE_EFFECTIVENESS_PRECEDENCE.indexOf(defender.type1) > TYPE_EFFECTIVENESS_PRECEDENCE.indexOf(defender.type2);
+function reorderTypeEffectiveness(defender, moveType) {
+	let row = TYPE_CHART_ROW_ORDER[moveType];
+	return defender.type2 && row && row.indexOf(defender.type1) > row.indexOf(defender.type2);
 }

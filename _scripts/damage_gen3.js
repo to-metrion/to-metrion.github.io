@@ -72,7 +72,7 @@ function getDamageResultADV(attacker, defender, move, field) {
 	var typeEffect1 = getMoveEffectiveness(move, moveType, defender.type1);
 	var typeEffect2 = defender.type2 ? getMoveEffectiveness(move, moveType, defender.type2) : 1;
 	var typeEffectiveness = typeEffect1 * typeEffect2;
-	if (reorderTypeEffectiveness(defender)) {
+	if (reorderTypeEffectiveness(defender, moveType)) {
 		let temp = typeEffect1;
 		typeEffect1 = typeEffect2;
 		typeEffect2 = temp;
