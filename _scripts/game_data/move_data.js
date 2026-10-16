@@ -1800,8 +1800,9 @@ var MOVES_ADV = $.extend(true, {}, MOVES_GSC, {
 		"makesContact": true,
 		"acc": 100
 	},
+	// gen 3 doubles the damage instead (damage_gen3.js)
 	"Revenge (Doubled)": {
-		"bp": 120,
+		"bp": 60,
 		"type": "Fighting",
 		"category": "Physical",
 		"makesContact": true,
@@ -2572,6 +2573,7 @@ var MOVES_DPP = $.extend(true, {}, MOVES_ADV, {
 		"makesContact": true,
 		"acc": 100
 	},
+	"Revenge (Doubled)": {"bp": 120},
 	"Roar of Time": {
 		"bp": 150,
 		"type": "Dragon",
