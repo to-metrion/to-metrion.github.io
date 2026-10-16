@@ -66,11 +66,17 @@ function getDamageResultADV(attacker, defender, move, field) {
 		}
 	}
 
+	var chartType = moveType;
+	if (move.name === "Struggle") {
+		moveType = "Normal";
+		chartType = "None";
+	}
+
 	attackerGrounded = isGrounded(attacker, field);
 	defenderGrounded = isGrounded(defender, field);
 
-	var typeEffect1 = getMoveEffectiveness(move, moveType, defender.type1);
-	var typeEffect2 = defender.type2 ? getMoveEffectiveness(move, moveType, defender.type2) : 1;
+	var typeEffect1 = getMoveEffectiveness(move, chartType, defender.type1);
+	var typeEffect2 = defender.type2 ? getMoveEffectiveness(move, chartType, defender.type2) : 1;
 	var typeEffectiveness = typeEffect1 * typeEffect2;
 	if (reorderTypeEffectiveness(defender, moveType)) {
 		let temp = typeEffect1;
@@ -309,7 +315,7 @@ function getDamageResultADV(attacker, defender, move, field) {
 		description.isHelpingHand = true;
 	}
 
-	if (attacker.hasType(moveType) || move.name.includes("Pledge Boosted")) {
+	if ((attacker.hasType(moveType) && move.name !== "Struggle") || move.name.includes("Pledge Boosted")) {
 		baseDamage = Math.floor(baseDamage * 1.5);
 	}
 
