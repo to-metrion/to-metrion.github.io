@@ -10,6 +10,7 @@ var MOVES_RBY = {
 		"type": "Poison",
 		"category": "Special",
 		"hasSecondaryEffect": true,
+		"isSpread": true,
 		"acc": 100
 	},
 	"Acid Armor": {
@@ -38,6 +39,7 @@ var MOVES_RBY = {
 	"Bind": {
 		"bp": 15,
 		"type": "Normal",
+		"category": "Physical",
 		"acc": 85
 	},
 	"Blizzard": {
@@ -122,6 +124,7 @@ var MOVES_RBY = {
 		"bp": 70,
 		"type": "Normal",
 		"category": "Physical",
+		"isPunch": true,
 		"hasSecondaryEffect": true,
 		"makesContact": true
 	},
@@ -372,7 +375,7 @@ var MOVES_RBY = {
 		"type": "Grass"
 	},
 	"Lick": {
-		"bp": 30,
+		"bp": 20,
 		"type": "Ghost",
 		"category": "Physical",
 		"makesContact": true,
@@ -394,6 +397,7 @@ var MOVES_RBY = {
 		"bp": 150,
 		"type": "Ground",
 		"category": "Physical",
+		"isSpread": true,
 		"acc": 100,
 		"noKOChance": true
 	},
@@ -415,6 +419,7 @@ var MOVES_RBY = {
 		"bp": 80,
 		"type": "Normal",
 		"category": "Physical",
+		"isPunch": true,
 		"makesContact": true,
 		"acc": 85
 	},
@@ -496,12 +501,14 @@ var MOVES_RBY = {
 		"type": "Grass",
 		"category": "Physical",
 		"isSlicing": true,
+		"isSpread": true,
 		"acc": 95
 	},
 	"Razor Wind": {
 		"bp": 80,
 		"type": "Normal",
-		"category": "Special"
+		"category": "Special",
+		"isSpread": true
 	},
 	"Recover": {
 		"bp": 0,
@@ -603,6 +610,7 @@ var MOVES_RBY = {
 	"Sludge": {
 		"bp": 65,
 		"type": "Poison",
+		"category": "Special",
 		"hasSecondaryEffect": true,
 		"acc": 100
 	},
@@ -762,6 +770,7 @@ var MOVES_RBY = {
 	"Twineedle": {
 		"bp": 25,
 		"type": "Bug",
+		"category": "Physical",
 		"isTwoHit": true,
 		"hasSecondaryEffect": true,
 		"acc": 100
@@ -796,6 +805,7 @@ var MOVES_RBY = {
 	"Wrap": {
 		"bp": 15,
 		"type": "Normal",
+		"category": "Physical",
 		"acc": 90
 	},
 	"Whirlwind": {
@@ -1352,7 +1362,8 @@ var MOVES_GSC = $.extend(true, {}, MOVES_RBY, {
 		"type": "Dragon",
 		"category": "Special",
 		"isWind": true,
-		"hasSecondaryEffect": true
+		"hasSecondaryEffect": true,
+		"isSpread": true
 	},
 	"Vital Throw": {
 		"bp": 70,
@@ -2141,7 +2152,6 @@ var MOVES_DPP = $.extend(true, {}, MOVES_ADV, {
 		"bp": 0,
 		"type": "Normal"
 	},
-	"Covet": {"bp": 60},
 	"Cross Poison": {
 		"bp": 70,
 		"type": "Poison",
@@ -2821,6 +2831,7 @@ var MOVES_BW = $.extend(true, {}, MOVES_DPP, {
 		"bp": 0,
 		"type": "Grass"
 	},
+	"Covet": {"bp": 60},
 	"Doom Desire": {"bp": 140},
 	"Dragon Tail": {
 		"bp": 60,
@@ -3534,6 +3545,7 @@ var MOVES_XY = $.extend(true, {}, MOVES_BW, {
 		"acc": 100
 	},
 	"Leaf Storm": {"bp": 130},
+	"Lick": {"bp": 30},
 	"Light of Ruin": {
 		"bp": 140,
 		"type": "Fairy",
