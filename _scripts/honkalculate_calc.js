@@ -144,7 +144,17 @@ function MassPokemon(speciesName, setName) {
 	// moves
 	for (let n = 0; n < 4; n++) {
 		let moveName = set.moves[n];
+		let hiddenPower = null;
+		if (moveName === "Hidden Power") {
+			let ivs = {};
+			["hp"].concat(STATS).forEach(stat => { ivs[stat] = set.ivs && typeof set.ivs[stat] !== "undefined" ? set.ivs[stat] : autoIVs; });
+			hiddenPower = getHiddenPower(ivs);
+			moveName = hiddenPower.name;
+		}
 		let defaultDetails = moves[moveName] || moves["(No Move)"];
+		if (hiddenPower) {
+			defaultDetails = $.extend({}, defaultDetails, {"bp": hiddenPower.bp});
+		}
 		if (gameId == 7 && defaultDetails.zp && defaultDetails.type && defaultDetails.type !== "None" &&
 			massPoke.item.endsWith(" Z") && massPoke.item.startsWith(defaultDetails.type.substring(0, defaultDetails.type.length - 1))) {
 			massPoke.moves.push(getZMove(moveName, massPoke, defaultDetails));

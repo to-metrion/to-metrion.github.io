@@ -66,13 +66,19 @@ function getDamageResultADV(attacker, defender, move, field) {
 		}
 	}
 
+	var chartType = moveType;
+	if (move.name === "Struggle") {
+		moveType = "Normal";
+		chartType = "None";
+	}
+
 	attackerGrounded = isGrounded(attacker, field);
 	defenderGrounded = isGrounded(defender, field);
 
-	var typeEffect1 = getMoveEffectiveness(move, moveType, defender.type1);
-	var typeEffect2 = defender.type2 ? getMoveEffectiveness(move, moveType, defender.type2) : 1;
+	var typeEffect1 = getMoveEffectiveness(move, chartType, defender.type1);
+	var typeEffect2 = defender.type2 ? getMoveEffectiveness(move, chartType, defender.type2) : 1;
 	var typeEffectiveness = typeEffect1 * typeEffect2;
-	if (reorderTypeEffectiveness(defender)) {
+	if (reorderTypeEffectiveness(defender, moveType)) {
 		let temp = typeEffect1;
 		typeEffect1 = typeEffect2;
 		typeEffect2 = temp;
@@ -110,6 +116,7 @@ function getDamageResultADV(attacker, defender, move, field) {
 	}
 
 	var basePower;
+	var damageMultiplier = 1;
 	switch (move.name) {
 	case "Flail":
 	case "Reversal":
@@ -125,8 +132,8 @@ function getDamageResultADV(attacker, defender, move, field) {
 	case "Facade":
 		basePower = move.bp;
 		if (["Paralyzed", "Poisoned", "Badly Poisoned", "Burned"].includes(attacker.status)) {
-			basePower *= 2;
-			description.moveBP = basePower;
+			damageMultiplier = 2;
+			description.moveBP = basePower * 2;
 		}
 		break;
 	case "Low Kick":
@@ -137,9 +144,13 @@ function getDamageResultADV(attacker, defender, move, field) {
 	case "Smelling Salts":
 		basePower = move.bp;
 		if (defender.status === "Paralyzed") {
-			basePower *= 2;
-			description.moveBP = basePower;
+			damageMultiplier = 2;
+			description.moveBP = basePower * 2;
 		}
+		break;
+	case "Revenge (Doubled)":
+		basePower = move.bp;
+		damageMultiplier = 2;
 		break;
 	case "Triple Kick":
 		basePower = move.bp;
@@ -288,11 +299,13 @@ function getDamageResultADV(attacker, defender, move, field) {
 	}
 
 	if (move.name === "Weather Ball" && field.weather !== "") {
-		baseDamage *= 2;
-		description.moveBP = baseDamage;
+		damageMultiplier = 2;
+		description.moveBP = move.bp * 2;
 	}
+	baseDamage *= damageMultiplier;
 
-	if (field.isCharge && moveType === "Electric") {
+	// Charge checks the move's base type
+	if (field.isCharge && moveType === "Electric" && !move.name.startsWith("Hidden Power")) {
 		baseDamage *= 2;
 		description.isCharge = true;
 	}
@@ -302,7 +315,7 @@ function getDamageResultADV(attacker, defender, move, field) {
 		description.isHelpingHand = true;
 	}
 
-	if (attacker.hasType(moveType) || move.name.includes("Pledge Boosted")) {
+	if ((attacker.hasType(moveType) && move.name !== "Struggle") || move.name.includes("Pledge Boosted")) {
 		baseDamage = Math.floor(baseDamage * 1.5);
 	}
 
