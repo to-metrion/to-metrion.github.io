@@ -66,13 +66,19 @@ function getDamageResultADV(attacker, defender, move, field) {
 		}
 	}
 
+	var chartType = moveType;
+	if (move.name === "Struggle") {
+		moveType = "Normal";
+		chartType = "None";
+	}
+
 	attackerGrounded = isGrounded(attacker, field);
 	defenderGrounded = isGrounded(defender, field);
 
-	var typeEffect1 = getMoveEffectiveness(move, moveType, defender.type1);
-	var typeEffect2 = defender.type2 ? getMoveEffectiveness(move, moveType, defender.type2) : 1;
+	var typeEffect1 = getMoveEffectiveness(move, chartType, defender.type1);
+	var typeEffect2 = defender.type2 ? getMoveEffectiveness(move, chartType, defender.type2) : 1;
 	var typeEffectiveness = typeEffect1 * typeEffect2;
-	if (reorderTypeEffectiveness(defender)) {
+	if (reorderTypeEffectiveness(defender, moveType)) {
 		let temp = typeEffect1;
 		typeEffect1 = typeEffect2;
 		typeEffect2 = temp;
@@ -122,24 +128,10 @@ function getDamageResultADV(attacker, defender, move, field) {
 		basePower = Math.max(1, Math.floor(150 * attacker.curHP / attacker.maxHP));
 		description.moveBP = basePower;
 		break;
-	case "Facade":
-		basePower = move.bp;
-		if (["Paralyzed", "Poisoned", "Badly Poisoned", "Burned"].includes(attacker.status)) {
-			basePower *= 2;
-			description.moveBP = basePower;
-		}
-		break;
 	case "Low Kick":
 		var w = defender.weight;
 		basePower = w >= 200 ? 120 : w >= 100 ? 100 : w >= 50 ? 80 : w >= 25 ? 60 : w >= 10 ? 40 : 20;
 		description.moveBP = basePower;
-		break;
-	case "Smelling Salts":
-		basePower = move.bp;
-		if (defender.status === "Paralyzed") {
-			basePower *= 2;
-			description.moveBP = basePower;
-		}
 		break;
 	case "Triple Kick":
 		basePower = move.bp;
@@ -157,7 +149,7 @@ function getDamageResultADV(attacker, defender, move, field) {
 		basePower = move.bp;
 	}
 
-	var isPhysical = moveType === "None" || typeChart[moveType].category === "Physical";
+	var isPhysical = typeChart[moveType].category === "Physical";
 	var attackStat = isPhysical ? AT : SA;
 	description.attackEVs = attacker.evs[attackStat] +
             (NATURES[attacker.nature][0] === attackStat ? "+" : NATURES[attacker.nature][1] === attackStat ? "-" : "") + " " +
@@ -287,12 +279,16 @@ function getDamageResultADV(attacker, defender, move, field) {
 		description.isCritical = true;
 	}
 
-	if (move.name === "Weather Ball" && field.weather !== "") {
+	if ((move.name === "Weather Ball" && field.weather !== "") ||
+		(move.name === "Facade" && ["Paralyzed", "Poisoned", "Badly Poisoned", "Burned"].includes(attacker.status)) ||
+		(move.name === "Smelling Salts" && defender.status === "Paralyzed")) {
 		baseDamage *= 2;
-		description.moveBP = baseDamage;
+		description.moveBP = move.bp * 2;
+	} else if (move.name.endsWith("(Doubled)")) {
+		baseDamage *= 2;
 	}
 
-	if (field.isCharge && moveType === "Electric") {
+	if (field.isCharge && moveType === "Electric" && !move.name.startsWith("Hidden Power")) {
 		baseDamage *= 2;
 		description.isCharge = true;
 	}
@@ -302,7 +298,7 @@ function getDamageResultADV(attacker, defender, move, field) {
 		description.isHelpingHand = true;
 	}
 
-	if (attacker.hasType(moveType) || move.name.includes("Pledge Boosted")) {
+	if (attacker.hasType(chartType) || move.name.includes("Pledge Boosted")) {
 		baseDamage = Math.floor(baseDamage * 1.5);
 	}
 

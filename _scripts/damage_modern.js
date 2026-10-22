@@ -1842,6 +1842,20 @@ function isTeraShell(defender, typeEffectiveness) {
 	return defender.curAbility === "Tera Shell" && typeEffectiveness >= 1 && defender.curHP === defender.maxHP;
 }
 
+const HIDDEN_POWER_TYPES = ["Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel",
+	"Fire", "Water", "Grass", "Electric", "Psychic", "Ice", "Dragon", "Dark"];
+function getHiddenPower(ivs) {
+	let typeBits = 0, powerBits = 0;
+	[ivs.hp, ivs.at, ivs.df, ivs.sp, ivs.sa, ivs.sd].forEach((iv, i) => {
+		typeBits += (iv & 1) << i;
+		powerBits += (iv >> 1 & 1) << i;
+	});
+	return {
+		"name": "Hidden Power " + HIDDEN_POWER_TYPES[Math.floor(typeBits * 15 / 63)],
+		"bp": gen <= 5 ? Math.floor(powerBits * 40 / 63) + 30 : 60
+	};
+}
+
 function countBoosts(boosts) {
 	var sum = 0;
 	for (var i = 0; i < STATS.length; i++) {

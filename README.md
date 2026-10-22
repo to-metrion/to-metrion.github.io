@@ -22,7 +22,7 @@ IVs: # Stat
 ### Calculation Accuracy:
 This damage calculator is committed to accurate and correct calculations. It uses the following resources to verify calculations:
 
-* Gen III-IV: the damage code was taken from a [fork of Showdown's calc](https://github.com/turskain/turskain.github.io) and verified (Gen III [decomp](https://github.com/pret/pokeruby/blob/master/src/calculate_base_damage.c) | Gen IV [damage formula](https://www.smogon.com/dp/articles/damage_formula))
+* Gen III-IV: the damage code was taken from a [fork of Showdown's calc](https://github.com/turskain/turskain.github.io) and verified against the decompilations (Emerald [decomp](https://github.com/pret/pokeemerald/blob/master/src/pokemon.c) | Platinum [decomp](https://github.com/pret/pokeplatinum/blob/main/src/battle/battle_lib.c))
 * Gen V-IX: this calculator is a fork of a calculator based on the Gen V [damage formula research](https://www.smogon.com/bw/articles/bw_complete_damage_formula) (the formula explained up through Gen VII: [DaWoblefet's Damage Dissertation](https://www.trainertower.com/dawoblefets-damage-dissertation/))
 * Gen VIII-IX: additional effects are researched on Smogon (SwSh [mechanics research](https://www.smogon.com/forums/threads/sword-shield-battle-mechanics-research.3655528/) | SV [mechanics research](https://www.smogon.com/forums/threads/scarlet-violet-battle-mechanics-research.3709545/))
 

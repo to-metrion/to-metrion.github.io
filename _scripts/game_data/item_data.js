@@ -466,6 +466,8 @@ function getFlingPower(item) {
 		case "Dragon Fang":
 		case "Poison Barb":
 			return 70;
+		case "Stick":
+			return 60;
 		case "Adamant Orb":
 		case "Damp Rock":
 		case "Griseous Orb":
@@ -477,17 +479,42 @@ function getFlingPower(item) {
 		case "Terrain Extender":
 		case "Utility Umbrella":
 			return 60;
+		case "Sharp Beak":
+			return 50;
+		case "Icy Rock":
+		case "Lucky Punch":
+			return 40;
 		case "Toxic Orb":
 		case "Flame Orb":
 		case "Light Ball":
 		case "King's Rock":
 		case "Razor Fang":
+		case "Berry Juice":
+		case "Black Belt":
+		case "Black Glasses":
+		case "Black Sludge":
+		case "Charcoal":
+		case "Deep Sea Scale":
+		case "Life Orb":
+		case "Light Clay":
+		case "Magnet":
+		case "Metal Coat":
+		case "Metronome":
+		case "Miracle Seed":
+		case "Mystic Water":
+		case "Never-Melt Ice":
+		case "Scope Lens":
+		case "Shell Bell":
+		case "Soul Dew":
+		case "Spell Tag":
+		case "Twisted Spoon":
 			return 30;
 	}
 	return 10;
 }
 
 var NATURAL_GIFT_STATS = {
+	"Aguav Berry": {"t": "Dragon", "p": 80},
 	"Apicot Berry": {"t": "Ground", "p": 100},
 	"Aspear Berry": {"t": "Ice", "p": 80},
 	"Babiri Berry": {"t": "Steel", "p": 80},
@@ -502,8 +529,10 @@ var NATURAL_GIFT_STATS = {
 	"Custap Berry": {"t": "Ghost", "p": 100},
 	"Durin Berry": {"t": "Water", "p": 100},
 	"Enigma Berry": {"t": "Bug", "p": 100},
+	"Figy Berry": {"t": "Bug", "p": 80},
 	"Ganlon Berry": {"t": "Ice", "p": 100},
 	"Haban Berry": {"t": "Dragon", "p": 80},
+	"Iapapa Berry": {"t": "Dark", "p": 80},
 	"Jaboca Berry": {"t": "Dragon", "p": 100},
 	"Kasib Berry": {"t": "Ghost", "p": 80},
 	"Kebia Berry": {"t": "Poison", "p": 80},
@@ -512,6 +541,7 @@ var NATURAL_GIFT_STATS = {
 	"Leppa Berry": {"t": "Fighting", "p": 80},
 	"Liechi Berry": {"t": "Grass", "p": 100},
 	"Lum Berry": {"t": "Flying", "p": 80},
+	"Mago Berry": {"t": "Ghost", "p": 80},
 	"Maranga Berry": {"t": "Dark", "p": 100},
 	"Micle Berry": {"t": "Rock", "p": 100},
 	"Occa Berry": {"t": "Fire", "p": 80},
@@ -532,6 +562,7 @@ var NATURAL_GIFT_STATS = {
 	"Tanga Berry": {"t": "Bug", "p": 80},
 	"Wacan Berry": {"t": "Electric", "p": 80},
 	"Watmel Berry": {"t": "Fire", "p": 100},
+	"Wiki Berry": {"t": "Rock", "p": 80},
 	"Yache Berry": {"t": "Ice", "p": 80}
 };
 
