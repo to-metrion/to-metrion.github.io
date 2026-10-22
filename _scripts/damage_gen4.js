@@ -483,7 +483,7 @@ function getDamageResultPtHGSS(attacker, defender, move, field) {
 
 	// the random factor is applied between the LO mod and the STAB mod, so don't apply anything below this until we're inside the loop
 	var stabMod = 1;
-	if ((attacker.hasType(moveType) && move.name !== "Struggle") || move.name.includes("Pledge Boosted")) {
+	if (attacker.hasType(chartType) || move.name.includes("Pledge Boosted")) {
 		if (attacker.ability === "Adaptability") {
 			stabMod = 2;
 			description.attackerAbility = attacker.ability;
@@ -588,7 +588,7 @@ const TYPE_CHART_ROW_ORDER = {
 	"Steel": ["Fire", "Water", "Electric", "Ice", "Rock", "Steel"]
 };
 
-function reorderTypeEffectiveness(defender, moveType) {
-	let row = TYPE_CHART_ROW_ORDER[moveType];
+function reorderTypeEffectiveness(defender, attackType) {
+	let row = TYPE_CHART_ROW_ORDER[attackType];
 	return defender.type2 && row && row.indexOf(defender.type1) > row.indexOf(defender.type2);
 }
